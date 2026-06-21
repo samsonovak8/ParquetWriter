@@ -1,0 +1,15 @@
+# Build artifacts
+/build/
+compile_commands.json
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Generated data
+*.parquet
+
+# Compiled libraries
+*.so
+*.dylib
