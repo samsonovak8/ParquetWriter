@@ -99,7 +99,7 @@ namespace cola_parquet_writer {
   }  // namespace
 
   ParquetWriter::ParquetWriter(ParquetWriterConfig config) : config_(std::move(config)) {
-    auto batch_builder = arrow::RecordBatchBuilder::Make(EventSchema(), arrow::default_memory_pool());
+    auto batch_builder = arrow::RecordBatchBuilder::Make(EventSchema(), config_.memory_pool, config_.batch_size);
     ThrowIfNotOk(batch_builder.status());
     batch_builder_ = std::move(*batch_builder);
   }
@@ -157,7 +157,7 @@ namespace cola_parquet_writer {
     auto props = parquet::WriterProperties::Builder().compression(ParseCompression(config_.compression))->build();
     auto arrow_props = parquet::ArrowWriterProperties::Builder().store_schema()->build();
     auto writer =
-        parquet::arrow::FileWriter::Open(*EventSchema(), arrow::default_memory_pool(), out_stream_, props, arrow_props);
+        parquet::arrow::FileWriter::Open(*EventSchema(), config_.memory_pool, out_stream_, props, arrow_props);
     if (!writer.ok()) {
       throw std::runtime_error(writer.status().ToString());
     }

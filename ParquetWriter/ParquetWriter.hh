@@ -19,6 +19,9 @@ namespace cola_parquet_writer {
     std::string path = "cola_output.parquet";
     std::string compression = "zstd";
     int64_t batch_size = 1000;
+
+    // Arrow internals
+    arrow::MemoryPool* memory_pool = arrow::default_memory_pool();
   };
 
   class ParquetWriter : public VWriter {
