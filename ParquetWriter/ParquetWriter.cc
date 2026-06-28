@@ -6,8 +6,8 @@ namespace cola_parquet_writer {
 
   namespace {
 
-    std::shared_ptr<arrow::DataType> MakeParticleStruct() {
-      return arrow::struct_({
+    const std::shared_ptr<arrow::DataType>& ParticleStruct() {
+      static const std::shared_ptr<arrow::DataType> type = arrow::struct_({
           // LorentzVector position
           arrow::field("pos_t", arrow::float64()),
           arrow::field("pos_x", arrow::float64()),
@@ -23,10 +23,11 @@ namespace cola_parquet_writer {
           // ParticleClass
           arrow::field("p_class", arrow::int8()),
       });
+      return type;
     }
 
-    std::shared_ptr<arrow::Schema> MakeSchema() {
-      return arrow::schema({
+    const std::shared_ptr<arrow::Schema>& EventSchema() {
+      static const std::shared_ptr<arrow::Schema> schema = arrow::schema({
           // EventIniState
           arrow::field("event_id", arrow::int64()),
           arrow::field("pdg_code_a", arrow::int32()),
@@ -47,10 +48,11 @@ namespace cola_parquet_writer {
           arrow::field("theta_rot_a", arrow::float32()),
           arrow::field("phi_rot_b", arrow::float32()),
           arrow::field("theta_rot_b", arrow::float32()),
-          arrow::field("ini_state_particles", arrow::list(MakeParticleStruct())),
+          arrow::field("ini_state_particles", arrow::list(ParticleStruct())),
           // EventParticles
-          arrow::field("particles", arrow::list(MakeParticleStruct())),
+          arrow::field("particles", arrow::list(ParticleStruct())),
       });
+      return schema;
     }
 
     void ThrowIfNotOk(const arrow::Status& status) {
@@ -96,8 +98,8 @@ namespace cola_parquet_writer {
 
   }  // namespace
 
-  ParquetWriter::ParquetWriter(ParquetWriterConfig config) : config_(std::move(config)), schema_(MakeSchema()) {
-    auto batch_builder = arrow::RecordBatchBuilder::Make(schema_, arrow::default_memory_pool());
+  ParquetWriter::ParquetWriter(ParquetWriterConfig config) : config_(std::move(config)) {
+    auto batch_builder = arrow::RecordBatchBuilder::Make(EventSchema(), arrow::default_memory_pool());
     ThrowIfNotOk(batch_builder.status());
     batch_builder_ = std::move(*batch_builder);
   }
@@ -155,7 +157,7 @@ namespace cola_parquet_writer {
     auto props = parquet::WriterProperties::Builder().compression(ParseCompression(config_.compression))->build();
     auto arrow_props = parquet::ArrowWriterProperties::Builder().store_schema()->build();
     auto writer =
-        parquet::arrow::FileWriter::Open(*schema_, arrow::default_memory_pool(), out_stream_, props, arrow_props);
+        parquet::arrow::FileWriter::Open(*EventSchema(), arrow::default_memory_pool(), out_stream_, props, arrow_props);
     if (!writer.ok()) {
       throw std::runtime_error(writer.status().ToString());
     }

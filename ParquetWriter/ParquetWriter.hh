@@ -37,7 +37,6 @@ namespace cola_parquet_writer {
     void EnsureFileWriterOpen();
 
     ParquetWriterConfig config_;
-    std::shared_ptr<arrow::Schema> schema_;
     std::unique_ptr<arrow::RecordBatchBuilder> batch_builder_;
     std::shared_ptr<arrow::io::FileOutputStream> out_stream_;
     std::unique_ptr<parquet::arrow::FileWriter> file_writer_;
