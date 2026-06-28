@@ -4,10 +4,18 @@ import colapy
 
 
 class VariableGenerator(colapy.GeneratorBase):
-    def __init__(self, **kwargs: str) -> None:
-        self._min = int(kwargs.get("min_particles", "0"))
-        self._max = int(kwargs.get("max_particles", "50"))
-        self._rng = random.Random(int(kwargs.get("seed", "42")))
+    def __init__(
+        self,
+        *,
+        min_particles: int = 0,
+        max_particles: int = 50,
+        seed: int = 42,
+        **extra: str,
+    ) -> None:
+        _ = extra
+        self._min = int(min_particles)
+        self._max = int(max_particles)
+        self._rng = random.Random(int(seed))
 
     def __call__(self) -> colapy.EventData:
         state = colapy.EventInitialState(
