@@ -8,11 +8,10 @@
 
 ## Build and install
 ```bash
-cmake -S . -B build \
-    -DCMAKE_PREFIX_PATH="$HOME/.local" \
-    -DCMAKE_INSTALL_PREFIX="$HOME/.local"
-cmake --build build -j
-cmake --install build
+source ~/.venv-cola/bin/activate
+cmake -S . -B build -DCMAKE_PREFIX_PATH="$HOME/.local" -DBUILD_TESTING=ON
+cmake --build build -j && cmake --install build
+ctest --test-dir build --output-on-failure # for tests
 ```
 
 ## Configuration (XML attributes)

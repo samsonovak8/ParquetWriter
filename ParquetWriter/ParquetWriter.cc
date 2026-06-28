@@ -73,8 +73,8 @@ namespace cola_parquet_writer {
         ThrowIfNotOk(static_cast<arrow::DoubleBuilder*>(struct_builder->field_builder(6))->Append(particle.momentum.y));
         ThrowIfNotOk(static_cast<arrow::DoubleBuilder*>(struct_builder->field_builder(7))->Append(particle.momentum.z));
         ThrowIfNotOk(static_cast<arrow::Int32Builder*>(struct_builder->field_builder(8))->Append(particle.pdg_code));
-        ThrowIfNotOk(
-            static_cast<arrow::Int8Builder*>(struct_builder->field_builder(9))->Append(static_cast<int8_t>(particle.p_class)));
+        ThrowIfNotOk(static_cast<arrow::Int8Builder*>(struct_builder->field_builder(9))
+                         ->Append(static_cast<int8_t>(particle.p_class)));
       }
     }
 

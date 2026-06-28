@@ -1,0 +1,9 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+find_dependency(COLA REQUIRED)
+find_dependency(Arrow REQUIRED)
+find_dependency(Parquet REQUIRED)
+
+include(@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/cmake/@COLA_MODULE_NAME@/@COLA_MODULE_NAME@Export.cmake)
