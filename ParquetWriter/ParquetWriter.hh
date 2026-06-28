@@ -12,13 +12,16 @@
 
 namespace cola_parquet_writer {
 
+  using cola::EventData;
+  using cola::VWriter;
+
   struct ParquetWriterConfig {
     std::string path = "cola_output.parquet";
     std::string compression = "zstd";
     int64_t batch_size = 1000;
   };
 
-  class ParquetWriter : public cola::VWriter {
+  class ParquetWriter : public VWriter {
    public:
     static inline const std::string kName = "ParquetWriter";
 
@@ -29,11 +32,11 @@ namespace cola_parquet_writer {
     ParquetWriter& operator=(ParquetWriter&&) = delete;
     ~ParquetWriter() override;
 
-    void operator()(std::unique_ptr<cola::EventData>&& data) override;
+    void operator()(std::unique_ptr<EventData>&& data) override;
 
    private:
     void Flush();
-    void AppendEvent(const cola::EventData& data);
+    void AppendEvent(const EventData& data);
     void EnsureFileWriterOpen();
 
     ParquetWriterConfig config_;

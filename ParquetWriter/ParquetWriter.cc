@@ -114,7 +114,7 @@ namespace cola_parquet_writer {
     buffered_ = 0;
   }
 
-  void ParquetWriter::AppendEvent(const cola::EventData& data) {
+  void ParquetWriter::AppendEvent(const EventData& data) {
     const auto& ini = data.ini_state;
 
     ThrowIfNotOk(batch_builder_->GetFieldAs<arrow::Int64Builder>(0)->Append(event_counter_++));
@@ -164,7 +164,7 @@ namespace cola_parquet_writer {
     file_writer_ = std::move(*writer);
   }
 
-  void ParquetWriter::operator()(std::unique_ptr<cola::EventData>&& data) {
+  void ParquetWriter::operator()(std::unique_ptr<EventData>&& data) {
     EnsureFileWriterOpen();
     AppendEvent(*data);
     if (buffered_ >= config_.batch_size) {
